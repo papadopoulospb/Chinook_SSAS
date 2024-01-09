@@ -1,0 +1,8 @@
+C:\eirini\Chinook Project\Chinook Project\bin\Model.asdatabase
+C:\eirini\Chinook Project\Chinook Project\bin\Model.deploymenttargets
+C:\eirini\Chinook Project\Chinook Project\bin\Model.deploymentoptions
+C:\eirini\Chinook Project\Chinook Project\obj\Development\Chinook Project.smproj.AssemblyReference.cache
+C:\eirini\Chinook Project\Chinook Project\obj\Development\Chinook Project.smproj.CoreCompileInputs.cache
+C:\eirini\Chinook Project\Chinook Project\obj\Development\Model.asdatabase
+C:\eirini\Chinook Project\Chinook Project\obj\Development\Model.deploymentoptions
+C:\eirini\Chinook Project\Chinook Project\obj\Development\Model.deploymenttargets

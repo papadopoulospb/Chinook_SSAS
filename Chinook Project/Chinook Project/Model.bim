@@ -1,0 +1,743 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1600,
+  "model": {
+    "culture": "en-US",
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/localhost;ChinookDW",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "localhost",
+            "database": "ChinookDW"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "UsernamePassword",
+          "Username": "sa",
+          "EncryptConnection": false
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "DimCustomer",
+        "columns": [
+          {
+            "name": "CustomerKey",
+            "dataType": "int64",
+            "sourceColumn": "CustomerKey"
+          },
+          {
+            "name": "CustomerId",
+            "dataType": "int64",
+            "sourceColumn": "CustomerId"
+          },
+          {
+            "name": "CustomerFullName",
+            "dataType": "string",
+            "sourceColumn": "CustomerFullName"
+          },
+          {
+            "name": "CustomerCompany",
+            "dataType": "string",
+            "sourceColumn": "CustomerCompany"
+          },
+          {
+            "name": "CustomerAddress",
+            "dataType": "string",
+            "sourceColumn": "CustomerAddress"
+          },
+          {
+            "name": "CustomerCity",
+            "dataType": "string",
+            "sourceColumn": "CustomerCity"
+          },
+          {
+            "name": "CustomerState",
+            "dataType": "string",
+            "sourceColumn": "CustomerState"
+          },
+          {
+            "name": "CustomerCountry",
+            "dataType": "string",
+            "sourceColumn": "CustomerCountry"
+          },
+          {
+            "name": "CustomerPostalCode",
+            "dataType": "string",
+            "sourceColumn": "CustomerPostalCode"
+          },
+          {
+            "name": "CustomerFax",
+            "dataType": "string",
+            "sourceColumn": "CustomerFax"
+          },
+          {
+            "name": "CustomerEmail",
+            "dataType": "string",
+            "sourceColumn": "CustomerEmail"
+          },
+          {
+            "name": "SupportBy",
+            "dataType": "string",
+            "sourceColumn": "SupportBy"
+          },
+          {
+            "name": "RowIsCurrent",
+            "dataType": "int64",
+            "sourceColumn": "RowIsCurrent"
+          },
+          {
+            "name": "RowStartDate",
+            "dataType": "dateTime",
+            "sourceColumn": "RowStartDate"
+          },
+          {
+            "name": "RowEndDate",
+            "dataType": "dateTime",
+            "sourceColumn": "RowEndDate"
+          },
+          {
+            "name": "RowChangeReason",
+            "dataType": "string",
+            "sourceColumn": "RowChangeReason"
+          },
+          {
+            "type": "calculated",
+            "name": "min_orderdate",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "expression": "CALCULATE(MIN(FactSales[InvoiceDate]),FILTER(FactSales,FactSales[CustomerKey]=DimCustomer[CustomerKey]))"
+          },
+          {
+            "type": "calculated",
+            "name": "max_orderdate",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "expression": [
+              " CALCULATE(MAX(FactSales[InvoiceDate]),FILTER(FactSales,FactSales[CustomerKey]=DimCustomer[CustomerKey]))",
+              ""
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Customer_lifespan",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "expression": " DATEDIFF(DimCustomer[min_orderdate],DimCustomer[max_orderdate],YEAR)"
+          },
+          {
+            "type": "calculated",
+            "name": "Total_amount_customer",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "CALCULATE(SUM(FactSales[PartialAmount]),FILTER(FactSales,FactSales[CustomerKey]=DimCustomer[CustomerKey]))"
+          },
+          {
+            "type": "calculated",
+            "name": "count_sales_customer",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "expression": "CALCULATE(COUNT(FactSales[CustomerKey]),FILTER(FactSales,FactSales[CustomerKey]=DimCustomer[CustomerKey]))"
+          },
+          {
+            "type": "calculated",
+            "name": "Average_Value_of_Sale",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "DimCustomer[Total_amount_customer]/DimCustomer[count_sales_customer]"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;ChinookDW\",",
+                "    dbo_DimCustomer = Source{[Schema=\"dbo\",Item=\"DimCustomer\"]}[Data]",
+                "in",
+                "    dbo_DimCustomer"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimDate",
+        "columns": [
+          {
+            "name": "DateKey",
+            "dataType": "int64",
+            "sourceColumn": "DateKey"
+          },
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date"
+          },
+          {
+            "name": "FullDateUK",
+            "dataType": "string",
+            "sourceColumn": "FullDateUK"
+          },
+          {
+            "name": "FullDateUSA",
+            "dataType": "string",
+            "sourceColumn": "FullDateUSA"
+          },
+          {
+            "name": "DayOfMonth",
+            "dataType": "string",
+            "sourceColumn": "DayOfMonth"
+          },
+          {
+            "name": "DaySuffix",
+            "dataType": "string",
+            "sourceColumn": "DaySuffix"
+          },
+          {
+            "name": "DayName",
+            "dataType": "string",
+            "sourceColumn": "DayName"
+          },
+          {
+            "name": "DayOfWeekUSA",
+            "dataType": "string",
+            "sourceColumn": "DayOfWeekUSA"
+          },
+          {
+            "name": "DayOfWeekUK",
+            "dataType": "string",
+            "sourceColumn": "DayOfWeekUK"
+          },
+          {
+            "name": "DayOfWeekInMonth",
+            "dataType": "string",
+            "sourceColumn": "DayOfWeekInMonth"
+          },
+          {
+            "name": "DayOfWeekInYear",
+            "dataType": "string",
+            "sourceColumn": "DayOfWeekInYear"
+          },
+          {
+            "name": "DayOfQuarter",
+            "dataType": "string",
+            "sourceColumn": "DayOfQuarter"
+          },
+          {
+            "name": "DayOfYear",
+            "dataType": "string",
+            "sourceColumn": "DayOfYear"
+          },
+          {
+            "name": "WeekOfMonth",
+            "dataType": "string",
+            "sourceColumn": "WeekOfMonth"
+          },
+          {
+            "name": "WeekOfQuarter",
+            "dataType": "string",
+            "sourceColumn": "WeekOfQuarter"
+          },
+          {
+            "name": "WeekOfYear",
+            "dataType": "string",
+            "sourceColumn": "WeekOfYear"
+          },
+          {
+            "name": "Month",
+            "dataType": "string",
+            "sourceColumn": "Month"
+          },
+          {
+            "name": "MonthName",
+            "dataType": "string",
+            "sourceColumn": "MonthName"
+          },
+          {
+            "name": "MonthOfQuarter",
+            "dataType": "string",
+            "sourceColumn": "MonthOfQuarter"
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter"
+          },
+          {
+            "name": "QuarterName",
+            "dataType": "string",
+            "sourceColumn": "QuarterName"
+          },
+          {
+            "name": "Year",
+            "dataType": "string",
+            "sourceColumn": "Year"
+          },
+          {
+            "name": "YearName",
+            "dataType": "string",
+            "sourceColumn": "YearName"
+          },
+          {
+            "name": "MonthYear",
+            "dataType": "string",
+            "sourceColumn": "MonthYear"
+          },
+          {
+            "name": "MMYYYY",
+            "dataType": "string",
+            "sourceColumn": "MMYYYY"
+          },
+          {
+            "name": "FirstDayOfMonth",
+            "dataType": "dateTime",
+            "sourceColumn": "FirstDayOfMonth"
+          },
+          {
+            "name": "LastDayOfMonth",
+            "dataType": "dateTime",
+            "sourceColumn": "LastDayOfMonth"
+          },
+          {
+            "name": "FirstDayOfQuarter",
+            "dataType": "dateTime",
+            "sourceColumn": "FirstDayOfQuarter"
+          },
+          {
+            "name": "LastDayOfQuarter",
+            "dataType": "dateTime",
+            "sourceColumn": "LastDayOfQuarter"
+          },
+          {
+            "name": "FirstDayOfYear",
+            "dataType": "dateTime",
+            "sourceColumn": "FirstDayOfYear"
+          },
+          {
+            "name": "LastDayOfYear",
+            "dataType": "dateTime",
+            "sourceColumn": "LastDayOfYear"
+          },
+          {
+            "name": "IsHolidayUSA",
+            "dataType": "boolean",
+            "sourceColumn": "IsHolidayUSA"
+          },
+          {
+            "name": "IsWeekday",
+            "dataType": "boolean",
+            "sourceColumn": "IsWeekday"
+          },
+          {
+            "name": "HolidayUSA",
+            "dataType": "string",
+            "sourceColumn": "HolidayUSA"
+          },
+          {
+            "name": "IsHolidayUK",
+            "dataType": "boolean",
+            "sourceColumn": "IsHolidayUK"
+          },
+          {
+            "name": "HolidayUK",
+            "dataType": "string",
+            "sourceColumn": "HolidayUK"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;ChinookDW\",",
+                "    dbo_DimDate = Source{[Schema=\"dbo\",Item=\"DimDate\"]}[Data]",
+                "in",
+                "    dbo_DimDate"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimEmployee",
+        "columns": [
+          {
+            "name": "EmployeeKey",
+            "dataType": "int64",
+            "sourceColumn": "EmployeeKey"
+          },
+          {
+            "name": "EmployeeId",
+            "dataType": "int64",
+            "sourceColumn": "EmployeeId"
+          },
+          {
+            "name": "EmployeeName",
+            "dataType": "string",
+            "sourceColumn": "EmployeeName"
+          },
+          {
+            "name": "EmployeeTitle",
+            "dataType": "string",
+            "sourceColumn": "EmployeeTitle"
+          },
+          {
+            "name": "EmployeeManagerName",
+            "dataType": "string",
+            "sourceColumn": "EmployeeManagerName"
+          },
+          {
+            "name": "EmployeeBirthDate",
+            "dataType": "dateTime",
+            "sourceColumn": "EmployeeBirthDate"
+          },
+          {
+            "name": "HireDate",
+            "dataType": "dateTime",
+            "sourceColumn": "HireDate"
+          },
+          {
+            "name": "EmployeeAddress",
+            "dataType": "string",
+            "sourceColumn": "EmployeeAddress"
+          },
+          {
+            "name": "EmployeeCity",
+            "dataType": "string",
+            "sourceColumn": "EmployeeCity"
+          },
+          {
+            "name": "EmployeeState",
+            "dataType": "string",
+            "sourceColumn": "EmployeeState"
+          },
+          {
+            "name": "EmployeeCountry",
+            "dataType": "string",
+            "sourceColumn": "EmployeeCountry"
+          },
+          {
+            "name": "EmployeePostalCode",
+            "dataType": "string",
+            "sourceColumn": "EmployeePostalCode"
+          },
+          {
+            "name": "EmployeePhone",
+            "dataType": "string",
+            "sourceColumn": "EmployeePhone"
+          },
+          {
+            "name": "EmployeeFax",
+            "dataType": "string",
+            "sourceColumn": "EmployeeFax"
+          },
+          {
+            "name": "EmployeeEmail",
+            "dataType": "string",
+            "sourceColumn": "EmployeeEmail"
+          },
+          {
+            "name": "RowIsCurrent",
+            "dataType": "int64",
+            "sourceColumn": "RowIsCurrent"
+          },
+          {
+            "name": "RowStartDate",
+            "dataType": "dateTime",
+            "sourceColumn": "RowStartDate"
+          },
+          {
+            "name": "RowEndDate",
+            "dataType": "dateTime",
+            "sourceColumn": "RowEndDate"
+          },
+          {
+            "name": "RowChangeReason",
+            "dataType": "string",
+            "sourceColumn": "RowChangeReason"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;ChinookDW\",",
+                "    dbo_DimEmployee = Source{[Schema=\"dbo\",Item=\"DimEmployee\"]}[Data]",
+                "in",
+                "    dbo_DimEmployee"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimTrack",
+        "columns": [
+          {
+            "name": "TrackKey",
+            "dataType": "int64",
+            "sourceColumn": "TrackKey"
+          },
+          {
+            "name": "TrackId",
+            "dataType": "int64",
+            "sourceColumn": "TrackId"
+          },
+          {
+            "name": "TrackName",
+            "dataType": "string",
+            "sourceColumn": "TrackName"
+          },
+          {
+            "name": "AlbumTitle",
+            "dataType": "string",
+            "sourceColumn": "AlbumTitle"
+          },
+          {
+            "name": "ArtistName",
+            "dataType": "string",
+            "sourceColumn": "ArtistName"
+          },
+          {
+            "name": "MediaTypeName",
+            "dataType": "string",
+            "sourceColumn": "MediaTypeName"
+          },
+          {
+            "name": "GenreName",
+            "dataType": "string",
+            "sourceColumn": "GenreName"
+          },
+          {
+            "name": "Composer",
+            "dataType": "string",
+            "sourceColumn": "Composer"
+          },
+          {
+            "name": "Milliseconds",
+            "dataType": "int64",
+            "sourceColumn": "Milliseconds"
+          },
+          {
+            "name": "Bytes",
+            "dataType": "int64",
+            "sourceColumn": "Bytes"
+          },
+          {
+            "name": "RowIsCurrent",
+            "dataType": "int64",
+            "sourceColumn": "RowIsCurrent"
+          },
+          {
+            "name": "RowStartDate",
+            "dataType": "dateTime",
+            "sourceColumn": "RowStartDate"
+          },
+          {
+            "name": "RowEndDate",
+            "dataType": "dateTime",
+            "sourceColumn": "RowEndDate"
+          },
+          {
+            "name": "RowChangeReason",
+            "dataType": "string",
+            "sourceColumn": "RowChangeReason"
+          },
+          {
+            "type": "calculated",
+            "name": "MinutesTrack",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "ROUND(DimTrack[Milliseconds]/60000,2)"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;ChinookDW\",",
+                "    dbo_DimTrack = Source{[Schema=\"dbo\",Item=\"DimTrack\"]}[Data]",
+                "in",
+                "    dbo_DimTrack"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "FactSales",
+        "columns": [
+          {
+            "name": "TrackKey",
+            "dataType": "int64",
+            "sourceColumn": "TrackKey"
+          },
+          {
+            "name": "EmployeeKey",
+            "dataType": "int64",
+            "sourceColumn": "EmployeeKey"
+          },
+          {
+            "name": "CustomerKey",
+            "dataType": "int64",
+            "sourceColumn": "CustomerKey"
+          },
+          {
+            "name": "InvoiceDateKey",
+            "dataType": "int64",
+            "sourceColumn": "InvoiceDateKey"
+          },
+          {
+            "name": "InvoiceId",
+            "dataType": "int64",
+            "sourceColumn": "InvoiceId"
+          },
+          {
+            "name": "UnitPrice",
+            "dataType": "double",
+            "sourceColumn": "UnitPrice"
+          },
+          {
+            "name": "Quantity",
+            "dataType": "int64",
+            "sourceColumn": "Quantity"
+          },
+          {
+            "name": "PartialAmount",
+            "dataType": "double",
+            "sourceColumn": "PartialAmount"
+          },
+          {
+            "type": "calculated",
+            "name": "InvoiceDate",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "expression": " RELATED(DimDate[Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "Cohort",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": [
+              "",
+              "var currentCustomer = FactSales[CustomerKey]",
+              "return",
+              " FORMAT(",
+              "    CALCULATE(",
+              "    EOMONTH(MIN(FactSales[InvoiceDate]),0),",
+              "    FILTER('FactSales', FactSales[CustomerKey]=currentCustomer))",
+              ",\"yyyy/mm\")"
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "running_total",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": [
+              "CALCULATE(",
+              "SUM(FactSales[PartialAmount]),",
+              "FILTER(",
+              "ALL(FactSales),",
+              "FactSales[InvoiceDate] <= EARLIER(FactSales[InvoiceDate])",
+              ")",
+              ")"
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;ChinookDW\",",
+                "    dbo_FactSales = Source{[Schema=\"dbo\",Item=\"FactSales\"]}[Data]",
+                "in",
+                "    dbo_FactSales"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "AOV",
+            "expression": " SUM(FactSales[PartialAmount])/DISTINCTCOUNT(FactSales[InvoiceId])"
+          },
+          {
+            "name": "distinct_invoices",
+            "expression": [
+              "",
+              "DISTINCTCOUNT(FactSales[InvoiceId])"
+            ]
+          },
+          {
+            "name": "total_revenue",
+            "expression": " SUM(FactSales[PartialAmount])"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "f8fbcfcd-8e56-49bb-b183-face5811deed",
+        "fromTable": "FactSales",
+        "fromColumn": "CustomerKey",
+        "toTable": "DimCustomer",
+        "toColumn": "CustomerKey"
+      },
+      {
+        "name": "b9a6a764-64bc-48be-959f-d85cb1d87ed7",
+        "fromTable": "FactSales",
+        "fromColumn": "InvoiceDateKey",
+        "toTable": "DimDate",
+        "toColumn": "DateKey"
+      },
+      {
+        "name": "c3586eb1-5a8e-456a-b78c-09cbb974d5bd",
+        "fromTable": "FactSales",
+        "fromColumn": "EmployeeKey",
+        "toTable": "DimEmployee",
+        "toColumn": "EmployeeKey"
+      },
+      {
+        "name": "e9329554-311c-421a-86de-d5ca698e38f2",
+        "fromTable": "FactSales",
+        "fromColumn": "TrackKey",
+        "toTable": "DimTrack",
+        "toColumn": "TrackKey"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "700"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}
